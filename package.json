@@ -1,0 +1,27 @@
+{
+  "name": "juicebox",
+  "version": "1.0.0",
+  "description": "Simple Tumblr clone using PG PSQL Express and Node",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wallacepreston/juicebox.git"
+  },
+  "keywords": [
+    "node",
+    "pg",
+    "psql",
+    "postgresql",
+    "node",
+    "express"
+  ],
+  "author": "Preston Wallace",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wallacepreston/juicebox/issues"
+  },
+  "homepage": "https://github.com/wallacepreston/juicebox#readme"
+}
