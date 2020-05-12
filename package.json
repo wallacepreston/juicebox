@@ -4,7 +4,8 @@
   "description": "Simple Tumblr clone using PG PSQL Express and Node",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "seed:dev": "nodemon ./db/seed.js",
+    "start:dev": "nodemon index.js"
   },
   "repository": {
     "type": "git",
@@ -23,5 +24,11 @@
   "bugs": {
     "url": "https://github.com/wallacepreston/juicebox/issues"
   },
-  "homepage": "https://github.com/wallacepreston/juicebox#readme"
+  "homepage": "https://github.com/wallacepreston/juicebox#readme",
+  "dependencies": {
+    "pg": "^8.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.3"
+  }
 }
