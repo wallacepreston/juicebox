@@ -8,6 +8,7 @@ const {
   updatePost,
   getAllPosts,
   getPostsByUser,
+  createTags,
 } = require('./index');
 
 async function createInitialUsers() {
@@ -152,6 +153,8 @@ async function testDB() {
     console.log("Calling getUserById with 1");
     const albert = await getUserById(1);
     console.log("Result:", albert);
+    console.log("Calling createTags with ['#thebest', '#amazing']");
+    console.log(await createTags(['#thebest', '#amazing']));
 
     console.log("Finished database tests!");
   } catch (error) {
