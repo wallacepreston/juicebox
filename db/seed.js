@@ -1,3 +1,4 @@
+const util = require('util')
 const {
   client,
   getAllUsers,
@@ -176,7 +177,7 @@ async function testDB() {
 
     console.log('Calling getPostsByTagName with #happy');
     const postsWithHappy = await getPostsByTagName('#happy');
-    console.log('Result:', postsWithHappy);
+    console.log('Result:', util.inspect(postsWithHappy, {showHidden: false, depth: null, colors: true}));
     console.log('Finished database tests!');
   } catch (error) {
     console.log('Error during testDB');

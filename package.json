@@ -26,7 +26,8 @@
   },
   "homepage": "https://github.com/wallacepreston/juicebox#readme",
   "dependencies": {
-    "pg": "^8.1.0"
+    "pg": "^8.1.0",
+    "util": "^0.12.3"
   },
   "devDependencies": {
     "nodemon": "^2.0.3"
