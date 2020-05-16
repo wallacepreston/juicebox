@@ -106,7 +106,7 @@ async function createPost({
   }
 }
 
-async function updatePost(id, fields = {}) {
+async function updatePost(postId, fields = {}) {
   // read off the tags & remove that field 
   const { tags } = fields; // might be undefined
   delete fields.tags;
@@ -116,42 +116,40 @@ async function updatePost(id, fields = {}) {
     (key, index) => `"${ key }"=$${ index + 1 }`
   ).join(', ');
 
-  // return early if this is called without fields
-  if (setString.length === 0) {
-    return;
-  }
-
   try {
-    const { rows: [ post ] } = await client.query(`
-      UPDATE posts
-      SET ${ setString }
-      WHERE id=${ id }
-      RETURNING *;
-    `, Object.values(fields));
-
-    // if the user didn't pass in tags to update, return early
-    if (tags === undefined) {
-      return await getPostById(post.id);
+    // update any fields that need to be updated
+    if (setString.length > 0) {
+      await client.query(`
+        UPDATE posts
+        SET ${ setString }
+        WHERE id=${ postId }
+        RETURNING *;
+      `, Object.values(fields));
     }
 
-    // make any tags that need to be made
+    // return early if there's no tags to update
+    if (tags === undefined) {
+      return await getPostById(postId);
+    }
+
+    // make any new tags that need to be made
     const tagList = await createTags(tags);
     const tagListIdString = tagList.map(
       tag => `${ tag.id }`
     ).join(', ');
 
-    // now, delete any post_tags from the database which aren't in that tagList, but only those with correct postId
+    // delete any post_tags from the database which aren't in that tagList
     await client.query(`
       DELETE FROM post_tags
-      WHERE tag_id
+      WHERE "tagId"
       NOT IN (${ tagListIdString })
       AND "postId"=$1;
     `, [postId]);
 
     // and create post_tags as necessary
-    await addTagsToPost(post.id, tagList);
+    await addTagsToPost(postId, tagList);
 
-    return await getPostById(post.id);
+    return await getPostById(postId);
   } catch (error) {
     throw error;
   }
