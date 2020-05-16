@@ -1,6 +1,19 @@
 const { PORT = 3000 } = process.env;
 const express = require('express');
 const server = express();
+const bodyParser = require('body-parser');
+const morgan = require('morgan');
+
+const { client } = require('./db');
+client.connect();
+
+const apiRouter = require('./api');
+
+server.use(bodyParser.json());
+server.use(morgan('dev'));
+
+// `/api` routes
+server.use('/api', apiRouter);
 
 server.use((req, res, next) => {
   console.log('<___Body Logger START___>');
