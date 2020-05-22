@@ -51,18 +51,19 @@ postsRouter.post('/', requireUser, async (req, res, next) => {
   }
 });
 
-postsRouter.get('/', async (req, res, next) => {
+postsRouter.get('/', async (req, res) => {
   try {
-    const posts = await getAllPosts();
+    const allPosts = await getAllPosts();
+
+    const posts = allPosts.filter(post => post.active || (req.user && post.author.id === req.user.id));
+
     res.send({
       posts
-    })
-  } catch (err) {
-    console.error(err);
-    next(err);
+    });
+  } catch ({ name, message }) {
+    next({ name, message });
   }
-
-})
+});
 
 postsRouter.patch('/:postId', requireUser, async (req, res, next) => {
   const { postId } = req.params;
