@@ -42,6 +42,7 @@ async function dropTables() {
       DROP TABLE IF EXISTS tags;
       DROP TABLE IF EXISTS posts;
       DROP TABLE IF EXISTS users;
+      DROP TABLE IF EXISTS dogs;
     `);
 
     console.log('Finished dropping tables!');
@@ -79,6 +80,11 @@ async function createTables() {
         "postId" INTEGER NOT NULL REFERENCES posts(id),
         "tagId" INTEGER NOT NULL REFERENCES tags(id),
         UNIQUE ("postId", "tagId")
+      );
+      CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+      CREATE TABLE IF NOT EXISTS dogs (
+        "id" UUID NOT NULL DEFAULT uuid_generate_v1(),
+        name VARCHAR(255) UNIQUE NOT NULL
       );
     `);
 
@@ -178,7 +184,15 @@ async function testDB() {
     console.log('Calling getPostsByTagName with #happy');
     const postsWithHappy = await getPostsByTagName('#happy');
     console.log('Result:', util.inspect(postsWithHappy, {showHidden: false, depth: null, colors: true}));
+
+    // testing dogs
+    console.log('Inserting dog with value "fido"');
+    await client.query(`INSERT INTO dogs (name) values ('fido');`)
+    const {rows: [dog]} = await client.query(`select * from dogs`);
+    console.log('Result:', dog);
+
     console.log('Finished database tests!');
+    
   } catch (error) {
     console.log('Error during testDB');
     throw error;
