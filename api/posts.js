@@ -2,15 +2,15 @@ const express = require('express');
 const postsRouter = express.Router();
 const { getAllPosts, createPost, updatePost, getPostById } = require('../db');
 
-postsRouter.use( async (req, res, next) => {
-  console.log("A request is being made to /posts");
+postsRouter.use( (req, res, next) => {
+  console.log('A request is being made to /posts');
   next();
 });
 
 const { requireUser } = require('./utils');
 
 postsRouter.post('/', requireUser, async (req, res, next) => {
-  const { title, content, tags = "" } = req.body;
+  const { title, content, tags = '' } = req.body;
 
   const tagArr = tags.trim().split(/\s+/)
   let postData = {};
@@ -39,8 +39,8 @@ postsRouter.post('/', requireUser, async (req, res, next) => {
       res.send({post})
     } else {
       next({
-        name: "FailedCreatePost",
-        message: "Failed to create post"
+        name: 'FailedCreatePost',
+        message: 'Failed to create post'
       });
     }
     // otherwise, next an appropriate error object 
@@ -96,6 +96,30 @@ postsRouter.patch('/:postId', requireUser, async (req, res, next) => {
     }
   } catch ({ name, message }) {
     next({ name, message });
+  }
+});
+
+postsRouter.delete('/:postId', requireUser, async (req, res, next) => {
+  try {
+    const post = await getPostById(req.params.postId);
+
+    if (post && post.author.id === req.user.id) {
+      const updatedPost = await updatePost(post.id, { active: false });
+
+      res.send({ post: updatedPost });
+    } else {
+      // if there was a post, throw UnauthorizedUserError, otherwise throw PostNotFoundError
+      next(post ? {
+        name: 'UnauthorizedUserError',
+        message: 'You cannot delete a post which is not yours'
+      } : {
+        name: 'PostNotFoundError',
+        message: 'That post does not exist'
+      });
+    }
+
+  } catch ({ name, message }) {
+    next({ name, message })
   }
 });
 
