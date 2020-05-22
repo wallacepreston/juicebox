@@ -2,7 +2,7 @@ const { Client } = require('pg');
 
 const connectionString = process.env.DATABASE_URL || 'postgres://localhost:5432/juicebox-dev'
 console.log('>>>>>>>>> connectionString', connectionString);
-console.log('>>>>>>>>> process.env.DATABASE_URL', process.env.DATABASE_URL);
+console.log('>>>>>>>>> process.env.DATABASE_URL', process.env.DATABASE_URL); 
 
 const client = new Client(connectionString);
 
